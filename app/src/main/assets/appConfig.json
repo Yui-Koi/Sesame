@@ -92,6 +92,24 @@
           "pagesToTrigger": "custom"
         },
         {
+          "regex": "https?://accounts\\.google\\.com/.*",
+          "mode": "internal",
+          "label": "Google Accounts",
+          "pagesToTrigger": "custom"
+        },
+        {
+          "regex": "https?://([-\\w]+\\.)*firebaseapp\\.com/.*",
+          "mode": "internal",
+          "label": "Firebase Auth Helpers",
+          "pagesToTrigger": "custom"
+        },
+        {
+          "regex": "https?://([-\\w]+\\.)*web\\.app/.*",
+          "mode": "internal",
+          "label": "Firebase Hosting",
+          "pagesToTrigger": "custom"
+        },
+        {
           "regex": "https?:\\/\\/([-\\w]+\\.)*sesame.com(\\/.*)?$",
           "mode": "internal",
           "label": "All pages on my domain",
