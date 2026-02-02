@@ -2384,8 +2384,14 @@ public class MainActivity extends AppCompatActivity implements Observer,
                 handler.removeCallbacks(stopRunnable);
                 if (!fgsRunning && appContext != null) {
                     Intent intent = new Intent(appContext, CallForegroundService.class);
-                    androidx.core.content.ContextCompat.startForegroundService(appContext, intent);
-                    fgsRunning = true;
+                    try {
+                        androidx.core.content.ContextCompat.startForegroundService(appContext, intent);
+                        fgsRunning = true;
+                    } catch (RuntimeException e) {
+                        // Starting a foreground service can fail if the app is fully backgrounded
+                        // or the OS disallows the start at this time. Log and degrade gracefully.
+                        GNLog.getInstance().logError(TAG, "Error starting CallForegroundService", e);
+                    }
                 }
             }
         }

@@ -13,12 +13,13 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 /**
- * Debug-only foreground service used to keep the app in the foreground state
- * for testing WebRTC microphone behavior while the app is backgrounded.
+ * Foreground service used to keep the app in a foreground state for
+ * ongoing WebRTC calls so microphone capture can continue when the app
+ * is backgrounded or the screen is locked.
  */
 public class CallForegroundService extends Service {
 
-    private static final String CHANNEL_ID = "median_call_debug";
+    private static final String CHANNEL_ID = "median_call_service";
     private static final int NOTIFICATION_ID = 1001;
 
     @Override
@@ -51,10 +52,10 @@ public class CallForegroundService extends Service {
 
             NotificationChannel channel = new NotificationChannel(
                     CHANNEL_ID,
-                    "Debug Call Service",
+                    getString(R.string.call_channel_name),
                     NotificationManager.IMPORTANCE_LOW
             );
-            channel.setDescription("Foreground service for testing WebRTC microphone behavior.");
+            channel.setDescription(getString(R.string.call_channel_description));
             manager.createNotificationChannel(channel);
         }
     }
@@ -62,8 +63,8 @@ public class CallForegroundService extends Service {
     private Notification buildNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("WebRTC Debug Service")
-                .setContentText("Foreground service running for WebRTC mic tests.")
+                .setContentTitle(getString(R.string.call_notification_title))
+                .setContentText(getString(R.string.call_notification_text))
                 .setOngoing(true)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setPriority(NotificationCompat.PRIORITY_LOW);

@@ -21,7 +21,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
-    <!-- Foreground service for microphone (debug call testing) -->
+    <!-- Foreground service for WebRTC microphone capture -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
 
@@ -150,7 +150,7 @@
 
         <service android:name=".DownloadService"/>
 
-        <!-- Debug-only foreground service for testing WebRTC microphone behavior -->
+        <!-- Foreground service used to keep WebRTC microphone capture active while calls are in progress -->
         <service
             android:name=".CallForegroundService"
             android:enabled="true"
