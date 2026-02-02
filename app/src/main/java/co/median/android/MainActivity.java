@@ -625,14 +625,6 @@ public class MainActivity extends AppCompatActivity implements Observer,
         if (AppConfig.getInstance(this).permissions.isWebRTCBluetoothAudioEnabled()) {
             AudioUtils.initAudioFocusListener(this);
         }
-
-        // Debug-only: start a foreground service to keep the app in a
-        // foreground state for testing WebRTC microphone behavior when
-        // backgrounded or screen-locked.
-        if (BuildConfig.DEBUG) {
-            Intent serviceIntent = new Intent(this, CallForegroundService.class);
-            androidx.core.content.ContextCompat.startForegroundService(this, serviceIntent);
-        }
     }
 
     @Override
@@ -2331,16 +2323,89 @@ public class MainActivity extends AppCompatActivity implements Observer,
     }
 
     public void handleMessage(String message) {
-        if(message.isEmpty()) return;
+        if (message.isEmpty()) return;
         Bridge bridge = ((GoNativeApplication) getApplication()).mBridge;
         runOnUiThread(() -> {
             try {
                 JSONObject commandObject = new JSONObject(message);
+                // Handle internal WebRTC instrumentation events separately
+                if (commandObject.optBoolean("__median_webrtc", false)) {
+                    handleWebRtcInstrumentationEvent(commandObject);
+                    return;
+                }
                 bridge.handleJSBridgeFunctions(this, commandObject);
-            } catch (JSONException jsonException){ // pass it as a uri
+            } catch (JSONException jsonException) { // pass it as a uri
                 bridge.handleJSBridgeFunctions(this, Uri.parse(message));
             }
         });
+    }
+
+    private void handleWebRtcInstrumentationEvent(JSONObject commandObject) {
+        String type = commandObject.optString("type", "");
+        String event = commandObject.optString("event", "");
+        if ("audioTrack".equals(type)) {
+            if ("started".equals(event)) {
+                WebRtcMicManager.onAudioTrackStarted(getApplicationContext());
+            } else if ("ended".equals(event)) {
+                WebRtcMicManager.onAudioTrackEnded(getApplicationContext());
+            }
+        }
+    }
+
+    /**
+     * Manages the Foreground Service used to keep microphone access active
+     * while there are WebRTC audio tracks alive in the WebView.
+     */
+    private static final class WebRtcMicManager {
+        private static final Object LOCK = new Object();
+        private static final long STOP_DELAY_MS = 3000L;
+
+        private static Context appContext;
+        private static int activeAudioTracks = 0;
+        private static boolean fgsRunning = false;
+        private static final Handler handler = new Handler(Looper.getMainLooper());
+        private static final Runnable stopRunnable = () -> {
+            synchronized (LOCK) {
+                if (activeAudioTracks == 0 && appContext != null && fgsRunning) {
+                    Intent intent = new Intent(appContext, CallForegroundService.class);
+                    appContext.stopService(intent);
+                    fgsRunning = false;
+                }
+            }
+        };
+
+        static void onAudioTrackStarted(Context context) {
+            synchronized (LOCK) {
+                if (appContext == null) {
+                    appContext = context.getApplicationContext();
+                }
+                activeAudioTracks++;
+                // Cancel any pending stop since we now have active audio again.
+                handler.removeCallbacks(stopRunnable);
+                if (!fgsRunning && appContext != null) {
+                    Intent intent = new Intent(appContext, CallForegroundService.class);
+                    androidx.core.content.ContextCompat.startForegroundService(appContext, intent);
+                    fgsRunning = true;
+                }
+            }
+        }
+
+        static void onAudioTrackEnded(Context context) {
+            synchronized (LOCK) {
+                if (appContext == null) {
+                    appContext = context.getApplicationContext();
+                }
+                if (activeAudioTracks > 0) {
+                    activeAudioTracks--;
+                }
+                if (activeAudioTracks == 0) {
+                    // Debounce stopping the service to avoid flapping if tracks
+                    // are quickly recreated during renegotiation.
+                    handler.removeCallbacks(stopRunnable);
+                    handler.postDelayed(stopRunnable, STOP_DELAY_MS);
+                }
+            }
+        }
     }
 
     @Override
