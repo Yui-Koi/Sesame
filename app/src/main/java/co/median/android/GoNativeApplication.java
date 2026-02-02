@@ -7,6 +7,8 @@ import android.os.Message;
 import android.util.Base64;
 import android.widget.Toast;
 
+import com.onesignal.OneSignal;
+
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.multidex.MultiDexApplication;
@@ -64,6 +66,8 @@ public class GoNativeApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        initOneSignal();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             // App theme setup for API 31 and above
@@ -229,5 +233,14 @@ public class GoNativeApplication extends MultiDexApplication {
 
     public boolean isFirstLaunch() {
         return isFirstLaunch;
+    }
+
+    private void initOneSignal() {
+        String oneSignalAppId = BuildConfig.ONESIGNAL_APP_ID;
+        if (oneSignalAppId == null || oneSignalAppId.isEmpty()) {
+            return;
+        }
+
+        OneSignal.initWithContext(this, oneSignalAppId);
     }
 }

@@ -1,7 +1,6 @@
 import groovy.json.JsonSlurper
 
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
 //[enabled by builder] apply plugin: 'com.google.gms.google-services'
 //[enabled by builder] apply plugin: 'com.google.firebase.crashlytics'
 
@@ -138,10 +137,11 @@ tasks.matching { it.name.endsWith("GoogleServices") }.configureEach {
 }
 
 android {
+    compileSdk = 36
+
     defaultConfig {
-        compileSdk 36
-        minSdkVersion 23
-        targetSdkVersion 36
+        minSdk = 23
+        targetSdk = 36
         applicationId "co.median.android.xlrdknk"
         versionCode 6
         multiDexEnabled true
@@ -158,15 +158,13 @@ android {
                                 branch_live_key: branchLiveKey,
                                 branch_test_key: branchTestKey, 
                                 branch_test_mode: branchTestMode ]
+
+        buildConfigField 'String', 'ONESIGNAL_APP_ID', "\"${onesignalAppId}\""
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
     }
 
     signingConfigs {
@@ -190,13 +188,13 @@ android {
         }
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
             debuggable project.getProperties().get("enableLogsInRelease").toBoolean()
             signingConfig signingConfigs.release
         }
         upload {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
             matchingFallbacks = ['release']
             debuggable project.getProperties().get("enableLogsInRelease").toBoolean()
             signingConfig signingConfigs.upload
@@ -224,6 +222,12 @@ android {
     }
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+    }
+}
+
 configurations {
     medianPlugin.extendsFrom(implementation)
 }
@@ -236,6 +240,7 @@ dependencies {
     implementation 'androidx.core:core-splashscreen:1.2.0'
     implementation "co.median.android:icons:$iconsVersion"
     implementation "co.median.android:core:$coreVersion"
+    implementation "com.onesignal:OneSignal:[5.1.0, 5.1.99]"
     /**** end all apps ****/
 
     /**** add-on module dependencies ****/
