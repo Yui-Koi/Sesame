@@ -8,7 +8,7 @@
 - Plugins: refine local plugin discovery to scan `plugins/*/src/main/resources/META-INF/plugin-metadata.json` and merge local and compiled plugins with local precedence.
 - CI: update the Android CI workflow to trigger on `main`, `dependabot/**`, and `cosine/**` branches and publish `app/build/outputs/apk/normal/debug/app-normal-debug.apk` as the build artifact.
 
-## 2014-01-04
+## 2015-01-04
 
 - Fix a crash on reload with no page loaded.
 
