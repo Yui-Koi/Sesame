@@ -7,6 +7,8 @@ import android.os.Message;
 import android.util.Base64;
 import android.widget.Toast;
 
+import com.onesignal.OneSignal;
+
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.multidex.MultiDexApplication;
