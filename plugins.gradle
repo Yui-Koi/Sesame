@@ -61,17 +61,17 @@ class GoNativeModules {
 
     void scanLocalPlugins() {
         this.localPluginsMetadata.clear()
-        
-        def finder = new FileNameFinder()
-        def files = finder.getFileNames(System.getProperty("user.dir"), 'plugins/*/src/main/resources/META-INF/plugin-metadata.json')
-        files.each { fileName ->
-            def jsonFile = new File(fileName)
-            if (jsonFile.exists()) {
-                def parsedJson = new JsonSlurper().parseText(jsonFile.text).plugin
-                // Extract plugin directory name from path: plugins/pluginName/src/main/resources/META-INF/plugin-metadata.json
-                def pathParts = fileName.tokenize(File.separator)
-                def pluginDirName = pathParts[pathParts.indexOf("plugins") + 1]
-                parsedJson["sourceDir"] = "plugins/${pluginDirName}"
+
+        File pluginsRoot = new File(System.getProperty("user.dir"), "plugins")
+        if (!pluginsRoot.exists()) {
+            return
+        }
+
+        pluginsRoot.eachDir { pluginDir ->
+            File metadataFile = new File(pluginDir, "src/main/resources/META-INF/plugin-metadata.json")
+            if (metadataFile.exists()) {
+                def parsedJson = new JsonSlurper().parseText(metadataFile.text).plugin
+                parsedJson["sourceDir"] = "plugins/${pluginDir.name}"
                 parsedJson["isLocal"] = true
                 this.localPluginsMetadata.push(parsedJson)
                 this.logger.info("Found local plugin: ${parsedJson.pluginName} at ${parsedJson.sourceDir}")
