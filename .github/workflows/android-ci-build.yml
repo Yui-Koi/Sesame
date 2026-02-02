@@ -4,9 +4,12 @@ on:
   push:
     branches:
       - master
+      - main
+      - 'dependabot/**'
   pull_request:
     branches:
       - master
+      - main
 
 jobs:
   build:
@@ -43,4 +46,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
-          path: app/build/outputs/apk/debug/app-normal-debug.apk
+          path: app/build/outputs/apk/normal/debug/app-normal-debug.apk
