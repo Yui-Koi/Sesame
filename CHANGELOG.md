@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-02-02
+
+- Build: bump Android Gradle Plugin to 9.0.0 and Gradle wrapper to 9.1.0.
+- Dependencies: bump Kotlin to 2.3.0 and `androidx.webkit:webkit` to 1.15.0.
+- Push: integrate OneSignal V5 as a runtime dependency (BuildConfig field in `app/build.gradle` and initialization in `GoNativeApplication`).
+- Plugins: refine local plugin discovery to scan `plugins/*/src/main/resources/META-INF/plugin-metadata.json` and merge local and compiled plugins with local precedence.
+- CI: update the Android CI workflow to trigger on `main`, `dependabot/**`, and `cosine/**` branches and publish `app/build/outputs/apk/normal/debug/app-normal-debug.apk` as the build artifact.
+
 ## 2014-01-04
 
 - Fix a crash on reload with no page loaded.

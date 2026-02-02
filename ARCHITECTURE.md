@@ -18,13 +18,12 @@ This repository is a GoNative/Median Android shell app that wraps a web applicat
 
 - **Root `build.gradle`**
   - Declares shared versions:
-    - `kotlin_version = '2.2.0'`
+    - `kotlin_version = '2.3.0'`
     - `coreVersion = '2.7.27'`
     - `iconsVersion = '1.3.1'`
   - Uses repositories: `google()`, `mavenCentral()`, `gradlePluginPortal()`, and a Median private Maven repo (`https://maven.median.co`) plus a local `maven` dir.
   - Configures Gradle plugins:
-    - `com.android.tools.build:gradle:8.10.0`
-    - OneSignal Gradle plugin
+    - `com.android.tools.build:gradle:9.0.0`
     - Kotlin Gradle plugin
     - Commented-out Google Services and Firebase Crashlytics classpaths that are toggled by the GoNative builder.
   - Global resolution strategy:
@@ -53,9 +52,22 @@ This repository is a GoNative/Median Android shell app that wraps a web applicat
   - Parsed in `plugins.gradle` to add plugin dependencies dynamically.
 
 - **Wrapper & tooling**
-  - Standard Gradle wrapper (`gradlew`, `gradlew.bat`, `gradle/wrapper/`).
+  - Standard Gradle wrapper (`gradlew`, `gradlew.bat`, `gradle/wrapper/`), currently configured for **Gradle 9.1.0** (see `gradle/wrapper/gradle-wrapper.properties`).
   - Utility scripts:
     - `generate-theme.js`, `generate-app-icons.sh`, `generate-header-images.sh`, `generate-tinted-icons.sh` – used by the GoNative build pipeline to pre-generate images and themes from configuration.
+
+### 1.3 CI workflow
+
+- **Workflow file**: `.github/workflows/android-ci-build.yml`.
+- **Triggers**:
+  - `push` on `master`, `main`, `dependabot/**`, and `cosine/**` branches.
+  - `pull_request` targeting `master` or `main`.
+- **Steps (high level)**:
+  - Check out the repository.
+  - Set up JDK 17 via `actions/setup-java`.
+  - Cache Gradle wrapper and dependency caches.
+  - Run `./gradlew assembleDebug`.
+  - Upload the normal-flavor debug APK from `app/build/outputs/apk/normal/debug/app-normal-debug.apk` as the CI artifact.
 
 ### 1.2 App module (`app/`)
 
@@ -246,6 +258,7 @@ Because `AppConfig` is central, many classes register listeners (`ConfigListener
 - Application-level JS/CSS customization
 - The `Bridge` instance (core plugin bridge)
 - A window manager for coordinating multiple `MainActivity` instances
+- Push notifications (via OneSignal)
 
 Key responsibilities:
 
@@ -266,6 +279,11 @@ Key responsibilities:
   - `WebViewSetup.setupWebviewGlobals(this)` applies global WebView/static settings.
   - `WebViewPool` is instantiated and later initialized in `MainActivity`.
   - `GoNativeWindowManager` is created to track open windows and `urlLevel` information.
+
+- **Push notifications (OneSignal)**
+  - `onCreate()` calls `initOneSignal()`.
+  - `initOneSignal()` reads the App ID from `BuildConfig.ONESIGNAL_APP_ID` (set in `app/build.gradle` via `buildConfigField`).
+  - If the App ID is non-empty, it initializes OneSignal with `OneSignal.initWithContext(this, oneSignalAppId)`.
 
 - **Custom CSS & JS injection**
   - Reads custom files from assets when `AppConfig.hasCustomCSS/hasAndroidCustomCSS/hasCustomJS/hasAndroidCustomJS` are true.
