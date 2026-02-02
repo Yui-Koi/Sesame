@@ -738,32 +738,10 @@ public class UrlNavigation {
 
     private void injectWebRtcInstrumentation() {
         try {
-            String js = "(function(){" +
-                    "if(!navigator||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return;" +
-                    "if(navigator.mediaDevices.__median_webrtc_wrapped)return;" +
-                    "navigator.mediaDevices.__median_webrtc_wrapped=true;" +
-                    "var o=navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);" +
-                    "function s(){try{if(window.JSBridge&&typeof JSBridge.postMessage==='function'){" +
-                    "JSBridge.postMessage(JSON.stringify({__median_webrtc:true,type:'audioTrack',event:'ended'}));" +
-                    "}}catch(_e){} }" +
-                    "navigator.mediaDevices.getUserMedia=function(c){" +
-                    "var a=false;" +
-                    "if(c&&typeof c==='object'&&c.audio){a=true;}" +
-                    "return o(c).then(function(stream){" +
-                    "if(a&&stream&&typeof stream.getAudioTracks==='function'){" +
-                    "var ts=stream.getAudioTracks();" +
-                    "if(ts&&ts.length){" +
-                    "ts.forEach(function(t){" +
-                    "var h=function(){try{t.removeEventListener('ended',h);}catch(_e){}s();};" +
-                    "try{t.addEventListener('ended',h);}catch(_e){}" +
-                    "});" +
-                    "}" +
-                    "}" +
-                    "return stream;" +
-                    "});" +
-                    "};" +
-                    "})();";
-            mainActivity.runJavascript(js);
+            // customJS.js is already Base64-encoded into customJS and injected by
+            // injectJSviaJavascript(). To avoid duplicating the string here, we
+            // only rely on the JS-side wrapper for track 'ended' events.
+            // This method is kept for future extension but intentionally empty.
         } catch (Exception e) {
             GNLog.getInstance().logError(TAG, "Error injecting WebRTC instrumentation via javascript", e);
         }
