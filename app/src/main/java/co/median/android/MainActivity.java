@@ -459,16 +459,6 @@ public class MainActivity extends AppCompatActivity implements Observer,
             url = getUrlFromIntent(intent);
 
             if (url == null && isRoot) url = appConfig.getInitialUrl();
-
-            // For debug builds, override the initial root URL so we can
-            // quickly test WebRTC behavior against a public demo page
-            // without modifying appConfig.json.
-            if (BuildConfig.DEBUG && isRoot) {
-                final String webrtcTestUrl = "https://webrtc.github.io/samples/src/content/peerconnection/pc1/";
-                if (url == null || url.equals(appConfig.getInitialUrl())) {
-                    url = webrtcTestUrl;
-                }
-            }
             // url from intent (hub and spoke nav)
             if (url == null) url = intent.getStringExtra("url");
 
