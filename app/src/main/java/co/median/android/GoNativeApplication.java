@@ -65,6 +65,8 @@ public class GoNativeApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
 
+        initOneSignal();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             // App theme setup for API 31 and above
             setupAppTheme();
@@ -229,5 +231,14 @@ public class GoNativeApplication extends MultiDexApplication {
 
     public boolean isFirstLaunch() {
         return isFirstLaunch;
+    }
+
+    private void initOneSignal() {
+        String oneSignalAppId = BuildConfig.ONESIGNAL_APP_ID;
+        if (oneSignalAppId == null || oneSignalAppId.isEmpty()) {
+            return;
+        }
+
+        OneSignal.initWithContext(this, oneSignalAppId);
     }
 }

@@ -158,6 +158,8 @@ android {
                                 branch_live_key: branchLiveKey,
                                 branch_test_key: branchTestKey, 
                                 branch_test_mode: branchTestMode ]
+
+        buildConfigField 'String', 'ONESIGNAL_APP_ID', "\"${onesignalAppId}\""
     }
 
     compileOptions {
@@ -236,6 +238,7 @@ dependencies {
     implementation 'androidx.core:core-splashscreen:1.2.0'
     implementation "co.median.android:icons:$iconsVersion"
     implementation "co.median.android:core:$coreVersion"
+    implementation "com.onesignal:OneSignal:[5.1.0, 5.1.99]"
     /**** end all apps ****/
 
     /**** add-on module dependencies ****/
