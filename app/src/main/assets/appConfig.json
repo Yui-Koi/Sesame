@@ -92,6 +92,12 @@
           "pagesToTrigger": "custom"
         },
         {
+          "regex": "https?://accounts\\.google\\.com/.*",
+          "mode": "internal",
+          "label": "Google Accounts",
+          "pagesToTrigger": "custom"
+        },
+        {
           "regex": "https?:\\/\\/([-\\w]+\\.)*sesame.com(\\/.*)?$",
           "mode": "internal",
           "label": "All pages on my domain",
