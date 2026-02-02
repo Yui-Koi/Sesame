@@ -236,7 +236,7 @@ dependencies {
     /**** dependencies used by all apps ****/
     implementation "androidx.core:core-ktx:1.17.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.webkit:webkit:1.14.0'
+    implementation 'androidx.webkit:webkit:1.15.0'
     implementation 'androidx.core:core-splashscreen:1.2.0'
     implementation "co.median.android:icons:$iconsVersion"
     implementation "co.median.android:core:$coreVersion"
