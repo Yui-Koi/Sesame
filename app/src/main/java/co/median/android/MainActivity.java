@@ -2356,7 +2356,7 @@ public class MainActivity extends AppCompatActivity implements Observer,
      * Manages the Foreground Service used to keep microphone access active
      * while there are WebRTC audio tracks alive in the WebView.
      */
-    private static final class WebRtcMicManager {
+    static final class WebRtcMicManager {
         private static final Object LOCK = new Object();
         private static final long STOP_DELAY_MS = 3000L;
 
