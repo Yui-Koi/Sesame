@@ -7,6 +7,12 @@
 - Push: integrate OneSignal V5 as a runtime dependency (BuildConfig field in `app/build.gradle` and initialization in `GoNativeApplication`).
 - Plugins: refine local plugin discovery to scan `plugins/*/src/main/resources/META-INF/plugin-metadata.json` and merge local and compiled plugins with local precedence.
 - CI: update the Android CI workflow to trigger on `main`, `dependabot/**`, and `cosine/**` branches and publish `app/build/outputs/apk/normal/debug/app-normal-debug.apk` as the build artifact.
+- WebRTC: add Android 14+ friendly background microphone support for WebRTC calls by:
+  - Adding a `microphone` foreground service (`CallForegroundService`) and necessary `FOREGROUND_SERVICE`/`FOREGROUND_SERVICE_MICROPHONE` permissions.
+  - Starting the foreground service when WebRTC audio capture is granted via `GoNativeWebChromeClient.onPermissionRequest`.
+  - Instrumenting `navigator.mediaDevices.getUserMedia` in `customJS.js` to send JSBridge events when audio tracks end, allowing the service to stop when calls finish.
+  - Routing these events through `MainActivity.handleMessage` into an internal `WebRtcMicManager` that reference-counts active audio tracks and debounces foreground service shutdown.
+- JS Injection: move WebRTC instrumentation into `app/src/main/assets/customJS.js` and reuse the existing Base64 custom-JS injection path in `GoNativeApplication`/`UrlNavigation` instead of inlining large JS strings in Java.
 
 ## 2015-01-04
 

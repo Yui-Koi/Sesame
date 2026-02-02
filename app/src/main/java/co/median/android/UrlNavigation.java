@@ -567,6 +567,7 @@ public class UrlNavigation {
         // inject custom CSS and JS
         injectCSSviaJavascript();
         injectJSviaJavascript();
+        injectWebRtcInstrumentation();
 
         // update CSS theme attribute
         mainActivity.setupCssTheme();
@@ -732,6 +733,17 @@ public class UrlNavigation {
             Log.d(TAG, "Custom JS Injection Success");
         } catch (Exception e) {
             GNLog.getInstance().logError(TAG, "Error injecting customJS via javascript", e);
+        }
+    }
+
+    private void injectWebRtcInstrumentation() {
+        try {
+            // customJS.js is already Base64-encoded into customJS and injected by
+            // injectJSviaJavascript(). To avoid duplicating the string here, we
+            // only rely on the JS-side wrapper for track 'ended' events.
+            // This method is kept for future extension but intentionally empty.
+        } catch (Exception e) {
+            GNLog.getInstance().logError(TAG, "Error injecting WebRTC instrumentation via javascript", e);
         }
     }
 

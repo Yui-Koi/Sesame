@@ -216,6 +216,7 @@ class GoNativeWebChromeClient extends WebChromeClient {
             @Override
             public void onPermissionResult(String[] permissions, int[] grantResults) {
                 ArrayList<String> grantedPermissions = new ArrayList<String>();
+                boolean audioGranted = false;
                 for (int i = 0; i < grantResults.length; i++) {
                     if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                         continue;
@@ -223,9 +224,14 @@ class GoNativeWebChromeClient extends WebChromeClient {
 
                     if (permissions[i].equals(Manifest.permission.RECORD_AUDIO)) {
                         grantedPermissions.add(PermissionRequest.RESOURCE_AUDIO_CAPTURE);
+                        audioGranted = true;
                     } else if (permissions[i].equals(Manifest.permission.CAMERA)) {
                         grantedPermissions.add(PermissionRequest.RESOURCE_VIDEO_CAPTURE);
                     }
+                }
+
+                if (audioGranted) {
+                    MainActivity.WebRtcMicManager.onAudioTrackStarted(mainActivity.getApplicationContext());
                 }
 
                 if (grantedPermissions.isEmpty()) {

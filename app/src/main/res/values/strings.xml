@@ -51,4 +51,9 @@
 	<string name="file_download_finished_with_name">%1$s downloaded</string>
 	<string name="file_download_error">Download Error</string>
 	<string name="file_download_finished_gallery">Image saved to Gallery</string>
+
+	<string name="call_channel_name">Call service</string>
+	<string name="call_channel_description">Foreground service for ongoing WebRTC calls.</string>
+	<string name="call_notification_title">Call in progress</string>
+	<string name="call_notification_text">Keeping microphone active for your call.</string>
 </resources>

@@ -288,6 +288,7 @@ Key responsibilities:
 - **Custom CSS & JS injection**
   - Reads custom files from assets when `AppConfig.hasCustomCSS/hasAndroidCustomCSS/hasCustomJS/hasAndroidCustomJS` are true.
   - Concatenates file contents and Base64-encodes them into `customCss` and `customJs`. These are later injected using JS in `UrlNavigation`.
+  - For this template, `customJS.js` also contains a small WebRTC instrumentation wrapper around `navigator.mediaDevices.getUserMedia` that listens for audio track `ended` events and sends JSBridge messages consumed by `MainActivity`.
 
 - **First-launch detection**
   - Uses `SharedPreferences` key `hasLaunched` to set `isFirstLaunch`.
@@ -330,6 +331,7 @@ Notable operations:
   - Action bar items (`ActionManager`).
   - Side navigation drawer (`SideNavManager`).
   - Downloading, file sharing, location services, keyboard interactions, etc.
+  - A small `WebRtcMicManager` helper that coordinates an Android foreground service of type `microphone` used to keep WebRTC audio capture active while there are live audio tracks in the WebView.
 
 #### 5.1.1 Lifecycle setup
 

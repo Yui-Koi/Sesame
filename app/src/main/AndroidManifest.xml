@@ -19,7 +19,11 @@
 
     <!-- Microphone permissions -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-   <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+
+    <!-- Foreground service for WebRTC microphone capture -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
 
     <!-- Bluetooth permissions -->
     <!--<uses-permission android:name="android.permission.BLUETOOTH" />-->
@@ -145,6 +149,13 @@
             android:value="${facebook_client_token}" />
 
         <service android:name=".DownloadService"/>
+
+        <!-- Foreground service used to keep WebRTC microphone capture active while calls are in progress -->
+        <service
+            android:name=".CallForegroundService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="microphone" />
 
         <receiver
             android:name="co.median.android.AppUpgradeReceiver"
