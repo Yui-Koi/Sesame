@@ -213,7 +213,7 @@ android {
         }
     }
     namespace 'co.median.android'
-    testNamespace "${applicationId}.test"
+    testNamespace 'com.uwu.sesame.test'
     buildFeatures {
         buildConfig true
     }

@@ -5,8 +5,8 @@ var fs = require('fs'), xml2js = require('xml2js');
 var builder = new xml2js.Builder();
 
 // Color resources files
-var colorFileLight = require('path').join(__dirname, 'app/src/main/res/values/colors.xml');
-var colorFileDark = require('path').join(__dirname, 'app/src/main/res/values-night/colors.xml');
+var colorFileLight = require('path').join(__dirname, '..', 'app/src/main/res/values/colors.xml');
+var colorFileDark = require('path').join(__dirname, '..', 'app/src/main/res/values-night/colors.xml');
 
 // Check argument length
 if (process.argv.length !== 22) {

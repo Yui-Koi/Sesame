@@ -16,7 +16,7 @@ ic_share_black_24dp.png
 DARK_DEFAULT_COLOR=ffffff
 LIGHT_DEFAULT_COLOR=000000
 
-BASEDIR=$(dirname $0)
+BASEDIR=$(cd "$(dirname "$0")/.." && pwd)
 
 function showHelp {
     echo "Usage: $0 (dark|light) tintColor tintColorDark"
