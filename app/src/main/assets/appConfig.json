@@ -23,7 +23,7 @@
     "languages": [],
     "nativeBridgeUrls": [],
     "iosBundleId": "co.median.ios.xlrdknk",
-    "androidPackageName": "co.median.android.xlrdknk",
+    "androidPackageName": "com.uwu.sesame",
     "androidSigningKey": "release",
     "injectMedianJS": false,
     "forceSessionCookieExpiry": 0,

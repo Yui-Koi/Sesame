@@ -54,7 +54,7 @@ This repository is a GoNative/Median Android shell app that wraps a web applicat
 - **Wrapper & tooling**
   - Standard Gradle wrapper (`gradlew`, `gradlew.bat`, `gradle/wrapper/`), currently configured for **Gradle 9.1.0** (see `gradle/wrapper/gradle-wrapper.properties`).
   - Utility scripts:
-    - `generate-theme.js`, `generate-app-icons.sh`, `generate-header-images.sh`, `generate-tinted-icons.sh` – used by the GoNative build pipeline to pre-generate images and themes from configuration.
+    - `tools/generate-theme.js`, `tools/generate-app-icons.sh`, `tools/generate-header-images.sh`, `tools/generate-tinted-icons.sh` – used by the GoNative build pipeline to pre-generate images and themes from configuration.
 
 ### 1.3 CI workflow
 

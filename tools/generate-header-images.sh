@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BASEDIR=$(dirname $0)
+BASEDIR=$(cd "$(dirname "$0")/.." && pwd)
 
 sips --resampleHeight 36 -s format png --out $BASEDIR/app/src/main/res/drawable-mdpi/ic_actionbar.png $BASEDIR/HeaderImage 2>&1
 sips --resampleHeight 54 -s format png --out $BASEDIR/app/src/main/res/drawable-hdpi/ic_actionbar.png $BASEDIR/HeaderImage 2>&1

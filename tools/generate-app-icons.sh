@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BASEDIR=$(dirname $0)
+BASEDIR=$(cd "$(dirname "$0")/.." && pwd)
 sips -z 1024 1024 -s format png --out $BASEDIR/AppIconTemp.png $BASEDIR/AppIcon 2>&1
 
 # create icon surrounded by transparent border (AppIconBordered). Make border slightly less than 256 so background does not bleed through
