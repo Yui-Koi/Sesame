@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <resources>
   <color name="colorPrimary">#ffffff</color>
-  <color name="statusBarBackground">#5c5c5c</color>
+  <color name="statusBarBackground">#ffffff</color>
   <color name="titleTextColor">#1a100b</color>
   <color name="colorAccent">#009688</color>
   <color name="colorBackground">#ffffff</color>
