@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "199584029425",
+    "project_id": "sesame-3db6f",
+    "storage_bucket": "sesame-3db6f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:199584029425:android:4f13397d69c59f03f8e750",
+        "android_client_info": {
+          "package_name": "com.uwu.sesame"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWkciYPe91_q39s8Ad8v3_C6CWLNTPsLk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
