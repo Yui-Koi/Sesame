@@ -99,7 +99,7 @@ public class WebViewSetup {
         webSettings.setMinimumFontSize(1);
         webSettings.setMinimumLogicalFontSize(1);
 
-        webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
+        webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         CookieManager.getInstance().setAcceptThirdPartyCookies(wv, true);
 
         webSettings.setDomStorageEnabled(true);
@@ -146,7 +146,7 @@ public class WebViewSetup {
         if(!AppConfig.getInstance(context).geckoViewEnabled) {
             Map<String,Object> installation = Installation.getInfo(context);
             String dist = (String)installation.get("distribution");
-            if (dist != null && (dist.equals("debug") || dist.equals("adhoc"))) {
+            if (dist != null && dist.equals("debug")) {
                 WebView.setWebContentsDebuggingEnabled(true);
             }
         }

@@ -58,7 +58,7 @@ public class FileWriterSharer {
     private class JavascriptBridge {
         @JavascriptInterface
         public void postMessage(String jsonMessage) {
-            Log.d(TAG, "got message " + jsonMessage);
+            if (BuildConfig.DEBUG) Log.d(TAG, "got message");
             try {
                 JSONObject json = new JSONObject(jsonMessage);
                 String event = LeanUtils.optString(json, "event");
