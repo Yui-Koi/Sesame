@@ -234,15 +234,15 @@ public class HtmlIntercept {
             if (path1 == null) path1 = "";
             if (path2 == null) path2 = "";
 
-            int lengthDiff = path2.length() - path2.length();
+            int lengthDiff = path1.length() - path2.length();
             if (lengthDiff > 1 || lengthDiff < -1) return false;
             if (lengthDiff == 0) return path1.equals(path2);
             if (lengthDiff == 1) {
-                return path2.equals(path1 + "/");
+                return path1.equals(path2 + "/");
             }
 
             // lengthDiff == -1
-            return path1.equals(path2 + "/");
+            return path2.equals(path1 + "/");
         } catch (MalformedURLException e) {
             Log.w(TAG, "Error comparing URLs", e);
             return false;
