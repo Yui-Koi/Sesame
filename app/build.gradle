@@ -171,15 +171,15 @@ android {
     signingConfigs {
         release {
             storeFile file("../../release.keystore")
-            storePassword "password"
+            storePassword System.getenv("RELEASE_STORE_PASSWORD") ?: ""
             keyAlias "release"
-            keyPassword "password"
+            keyPassword System.getenv("RELEASE_KEY_PASSWORD") ?: ""
         }
         upload {
             storeFile file("../../upload.keystore")
-            storePassword "password"
+            storePassword System.getenv("UPLOAD_STORE_PASSWORD") ?: ""
             keyAlias "upload"
-            keyPassword "password"
+            keyPassword System.getenv("UPLOAD_KEY_PASSWORD") ?: ""
         }
     }
 
