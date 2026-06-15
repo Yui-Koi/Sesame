@@ -56,7 +56,7 @@ public class MedianEventsManager {
         try {
             activity.runJavascript(LeanUtils.createJsForCallback(callbackName, data));
         } catch (Exception ex) {
-            Log.d(TAG, "launchCallbackEvent: ", ex);
+            Log.e(TAG, "launchCallbackEvent: ", ex);
         }
     }
 

@@ -3,6 +3,7 @@ package co.median.android;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 import android.provider.Settings;
 import android.util.Base64;
 
@@ -17,6 +18,8 @@ import co.median.median_core.AppConfig;
  */
 
 public class CustomHeaders {
+    private static final String TAG = CustomHeaders.class.getName();
+
     public static Map<String, String> getCustomHeaders(Context context) {
         AppConfig appConfig = AppConfig.getInstance(context);
         if (appConfig.customHeaders == null) return null;
@@ -28,6 +31,7 @@ public class CustomHeaders {
             try {
                 val = interpolateValues(context, entry.getValue());
             } catch (UnsupportedEncodingException e) {
+                Log.w(TAG, "Error encoding custom header value", e);
                 val = null;
             }
 

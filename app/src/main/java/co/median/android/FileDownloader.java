@@ -372,6 +372,7 @@ public class FileDownloader implements DownloadListener {
             contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, filename + "_" + System.currentTimeMillis());
             return contentResolver.insert(baseExternalUri, contentValues);
         } catch (IllegalStateException ex) {
+            Log.w(TAG, "createUniqueFileUriWithTimeStamp: failed to create file URI", ex);
             return null;
         }
     }
@@ -477,7 +478,7 @@ public class FileDownloader implements DownloadListener {
             data.put("success", true);
             runCallback(activity, callback, data);
         } catch (JSONException e) {
-            // ignore
+            GNLog.getInstance().logError(TAG, "Error building success callback JSON", e);
         }
     }
 
@@ -489,7 +490,7 @@ public class FileDownloader implements DownloadListener {
             data.put("error", error);
             runCallback(activity, callback, data);
         } catch (JSONException e) {
-            // ignore
+            GNLog.getInstance().logError(TAG, "Error building error callback JSON", e);
         }
     }
 
