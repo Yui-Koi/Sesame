@@ -43,7 +43,6 @@ import java.net.URISyntaxException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -87,7 +86,6 @@ public class UrlNavigation {
     private boolean isCustomCSSInjected = false;
     private final String customCSS;
     private final String customJS;
-    private boolean isFirstLaunch = false;
     private final ActivityResultLauncher<FileUploadOptions> fileUploadLauncher;
     private ValueCallback<Uri[]> uploadCallback;
 
@@ -120,7 +118,6 @@ public class UrlNavigation {
         this.customCSS = ((GoNativeApplication) mainActivity.getApplication()).getCustomCss();
         this.customJS = ((GoNativeApplication) mainActivity.getApplication()).getCustomJs();
 
-        this.isFirstLaunch = ((GoNativeApplication) mainActivity.getApplication()).isFirstLaunch();
 
         this.fileUploadLauncher = mainActivity.registerForActivityResult(
                 new FileUploadContract(),
@@ -340,8 +337,7 @@ public class UrlNavigation {
                 if (noAction) return true;
 
                 // new activity
-                Intent intent = new Intent(mainActivity.getBaseContext(), MainActivity.class);
-                intent.putExtra("isRoot", false);
+                Intent intent = MainActivity.createChildWindowIntent(mainActivity.getBaseContext());
                 intent.putExtra("url", url);
                 intent.putExtra("parentUrlLevel", currentLevel);
                 intent.putExtra("postLoadJavascript", mainActivity.postLoadJavascript);
@@ -389,38 +385,20 @@ public class UrlNavigation {
         if (noAction && poolWebview != null) return true;
 
         if (poolWebview != null && poolDisownPolicy == WebViewPoolDisownPolicy.Always) {
-            this.mainActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mainActivity.switchToWebview(poolWebview, true, false);
-                    mainActivity.checkNavigationForPage(url);
-                }
-            });
+            switchToPoolWebview(poolWebview, url);
             webViewPool.disownWebview(poolWebview);
             webViewPool.onFinishedLoading(mainActivity);
             return true;
         }
 
         if (poolWebview != null && poolDisownPolicy == WebViewPoolDisownPolicy.Never) {
-            this.mainActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mainActivity.switchToWebview(poolWebview, true, false);
-                    mainActivity.checkNavigationForPage(url);
-                }
-            });
+            switchToPoolWebview(poolWebview, url);
             return true;
         }
 
         if (poolWebview != null && poolDisownPolicy == WebViewPoolDisownPolicy.Reload &&
                 !LeanUtils.urlsMatchOnPath(url, this.currentWebviewUrl)) {
-            this.mainActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mainActivity.switchToWebview(poolWebview, true, false);
-                    mainActivity.checkNavigationForPage(url);
-                }
-            });
+            switchToPoolWebview(poolWebview, url);
             return true;
         }
 
@@ -431,6 +409,13 @@ public class UrlNavigation {
         }
 
         return false;
+    }
+
+    private void switchToPoolWebview(GoNativeWebviewInterface poolWebview, String url) {
+        this.mainActivity.runOnUiThread(() -> {
+            mainActivity.switchToWebview(poolWebview, true, false);
+            mainActivity.checkNavigationForPage(url);
+        });
     }
 
     public boolean shouldOverrideUrlLoading(final GoNativeWebviewInterface view, String url,
@@ -634,8 +619,8 @@ public class UrlNavigation {
 
         // send installation info
         if (doNativeBridge) {
-            runGonativeDeviceInfo("median_device_info");
-            runGonativeDeviceInfo("gonative_device_info");
+            mainActivity.runGonativeDeviceInfo("median_device_info", false);
+            mainActivity.runGonativeDeviceInfo("gonative_device_info", false);
         }
 
         mainActivity.getGNApplication().mBridge.onPageFinish(mainActivity, doNativeBridge);
@@ -749,14 +734,6 @@ public class UrlNavigation {
 
     public void onFormResubmission(GoNativeWebviewInterface view, Message dontResend, Message resend) {
         resend.sendToTarget();
-    }
-
-    private void runGonativeDeviceInfo(String callback) {
-        Map<String, Object> installationInfo = Installation.getInfo(mainActivity);
-        installationInfo.put("isFirstLaunch", isFirstLaunch);
-        JSONObject jsonObject = new JSONObject(installationInfo);
-        String js = LeanUtils.createJsForCallback(callback, jsonObject);
-        mainActivity.runJavascript(js);
     }
 
     public void doUpdateVisitedHistory(@SuppressWarnings("unused") GoNativeWebviewInterface view, String url, boolean isReload) {
@@ -947,8 +924,7 @@ public class UrlNavigation {
                 @Override
                 public void onPageFinished(WebView view, String url) {
                     if (!mainActivity.onMaxWindowsReached(url)) {
-                        Intent intent = new Intent(mainActivity.getBaseContext(), MainActivity.class);
-                        intent.putExtra("isRoot", false);
+                        Intent intent = MainActivity.createChildWindowIntent(mainActivity.getBaseContext());
                         intent.putExtra("url", url);
                         intent.putExtra(MainActivity.EXTRA_IGNORE_INTERCEPT_MAXWINDOWS, true);
                         mainActivity.startActivityForResult(intent, MainActivity.REQUEST_WEB_ACTIVITY);
@@ -962,8 +938,7 @@ public class UrlNavigation {
 
     private void createNewWindow(Message resultMsg, boolean maxWindowsEnabled) {
         mainActivity.getGNApplication().setWebviewMessage(resultMsg);
-        Intent intent = new Intent(mainActivity.getBaseContext(), MainActivity.class);
-        intent.putExtra("isRoot", false);
+        Intent intent = MainActivity.createChildWindowIntent(mainActivity.getBaseContext());
         intent.putExtra(MainActivity.EXTRA_WEBVIEW_WINDOW_OPEN, true);
 
         if (maxWindowsEnabled) {

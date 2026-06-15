@@ -6,10 +6,7 @@ import android.os.AsyncTask;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.OutputStreamWriter;
 import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import co.median.median_core.AppConfig;
 import co.median.median_core.GNLog;
@@ -53,22 +50,7 @@ public class ConfigUpdater {
                 return null;
             }
 
-            try {
-                URL url = new URL("https://events.gonative.io/api/events/new");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setDoOutput(true);
-                connection.setDoInput(false); // we do not care about response
-                OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), "UTF-8");
-                writer.write(json.toString());
-                writer.close();
-                connection.connect();
-                connection.getResponseCode();
-                connection.disconnect();
-            } catch (Exception e) {
-                GNLog.getInstance().logError(TAG, e.getMessage(), e);
-            }
+            HttpPostHelper.postJson("https://events.gonative.io/api/events/new", json);
 
             return null;
         }

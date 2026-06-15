@@ -7,9 +7,6 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -136,25 +133,10 @@ public class RegistrationManager {
                 }
             }
 
-            try {
-                JSONObject json = new JSONObject(toSend);
-
-                URL url = new URL(registrationEndpoint.postUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setDoOutput(true);
-                OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), "UTF-8");
-                writer.write(json.toString());
-                writer.close();
-                connection.connect();
-                int result = connection.getResponseCode();
-
-                if (result < 200 || result > 299) {
-                    Log.w(TAG, "Recevied status code " + result + " when posting to " + registrationEndpoint.postUrl);
-                }
-            } catch (Exception e) {
-                GNLog.getInstance().logError(TAG, "Error posting to " + registrationEndpoint.postUrl, e);
+            JSONObject json = new JSONObject(toSend);
+            int result = HttpPostHelper.postJson(registrationEndpoint.postUrl, json);
+            if (result >= 0 && (result < 200 || result > 299)) {
+                Log.w(TAG, "Recevied status code " + result + " when posting to " + registrationEndpoint.postUrl);
             }
 
             return null;

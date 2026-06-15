@@ -597,6 +597,12 @@ public class MainActivity extends AppCompatActivity implements Observer,
         return getIntent().getBooleanExtra(EXTRA_WEBVIEW_WINDOW_OPEN, false);
     }
 
+    static Intent createChildWindowIntent(android.content.Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra("isRoot", false);
+        return intent;
+    }
+
     protected void onPause() {
         super.onPause();
         GoNativeApplication application = getGNApplication();
@@ -2153,11 +2159,10 @@ public class MainActivity extends AppCompatActivity implements Observer,
         if (appConfig.maxWindowsEnabled && appConfig.numWindows > 0 && getGNWindowManager().getWindowCount() >= appConfig.numWindows && onMaxWindowsReached(url))
             return;
 
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("isRoot", false);
+        Intent intent = createChildWindowIntent(this);
         intent.putExtra("url", url);
-        intent.putExtra(MainActivity.EXTRA_IGNORE_INTERCEPT_MAXWINDOWS, true);
-        startActivityForResult(intent, MainActivity.REQUEST_WEB_ACTIVITY);
+        intent.putExtra(EXTRA_IGNORE_INTERCEPT_MAXWINDOWS, true);
+        startActivityForResult(intent, REQUEST_WEB_ACTIVITY);
     }
 
     public void openExternalBrowser(Uri uri) {
@@ -2172,12 +2177,7 @@ public class MainActivity extends AppCompatActivity implements Observer,
             }
             startActivity(intent);
         } catch (Exception ex) {
-            if (ex instanceof ActivityNotFoundException) {
-                Toast.makeText(this, R.string.app_not_installed, Toast.LENGTH_LONG).show();
-                GNLog.getInstance().logError(TAG, getString(R.string.app_not_installed), ex, GNLog.TYPE_TOAST_ERROR);
-            } else {
-                GNLog.getInstance().logError(TAG, "openExternalBrowser: launchError - uri: " + uri, ex);
-            }
+            handleBrowserLaunchError("openExternalBrowser", uri, ex);
         }
     }
 
@@ -2195,12 +2195,16 @@ public class MainActivity extends AppCompatActivity implements Observer,
             customTabsIntent.intent.setData(uri);
             appBrowserActivityLauncher.launch(customTabsIntent.intent);
         } catch (Exception ex) {
-            if (ex instanceof ActivityNotFoundException) {
-                Toast.makeText(this, R.string.app_not_installed, Toast.LENGTH_LONG).show();
-                GNLog.getInstance().logError(TAG, getString(R.string.app_not_installed), ex, GNLog.TYPE_TOAST_ERROR);
-            } else {
-                GNLog.getInstance().logError(TAG, "openAppBrowser: launchError - uri: " + uri, ex);
-            }
+            handleBrowserLaunchError("openAppBrowser", uri, ex);
+        }
+    }
+
+    private void handleBrowserLaunchError(String caller, Uri uri, Exception ex) {
+        if (ex instanceof ActivityNotFoundException) {
+            Toast.makeText(this, R.string.app_not_installed, Toast.LENGTH_LONG).show();
+            GNLog.getInstance().logError(TAG, getString(R.string.app_not_installed), ex, GNLog.TYPE_TOAST_ERROR);
+        } else {
+            GNLog.getInstance().logError(TAG, caller + ": launchError - uri: " + uri, ex);
         }
     }
 
