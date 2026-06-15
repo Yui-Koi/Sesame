@@ -244,6 +244,7 @@ public class HtmlIntercept {
             // lengthDiff == -1
             return path1.equals(path2 + "/");
         } catch (MalformedURLException e) {
+            Log.w(TAG, "Error comparing URLs", e);
             return false;
         }
     }

@@ -406,6 +406,7 @@ class ActionManager(private val main: MainActivity) {
                         val q = URLEncoder.encode(query, "UTF-8")
                         main.loadUrl(url + q)
                     } catch (e: UnsupportedEncodingException) {
+                        Log.w(TAG, "Error encoding search query", e)
                         return true
                     }
 

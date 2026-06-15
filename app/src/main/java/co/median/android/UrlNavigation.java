@@ -224,7 +224,7 @@ public class UrlNavigation {
                     }
                 }
             } catch (Exception e) {
-                // do nothing
+                GNLog.getInstance().logError(TAG, "Error parsing gonative-bridge JSON", e);
             }
 
             return true;
@@ -498,7 +498,7 @@ public class UrlNavigation {
             if (mainActivity.getLeanWebView().shouldReloadPage(url))
                 return;
         } catch (Exception e) {
-            // ignore
+            GNLog.getInstance().logError(TAG, "Error checking shouldReloadPage", e);
         }
 
         // notify UrlLoader, for single-page apps
@@ -685,7 +685,7 @@ public class UrlNavigation {
             mainActivity.runJavascript(LeanUtils.createJsForCallback("gonative_library_ready", null));
             Log.d(TAG, "GoNative JSBridgeLibrary Injection Success");
         } catch (Exception e) {
-            Log.d(TAG, "GoNative JSBridgeLibrary Injection Error:- " + e.getMessage());
+            GNLog.getInstance().logError(TAG, "GoNative JSBridgeLibrary Injection Error", e);
         }
     }
 
@@ -737,14 +737,10 @@ public class UrlNavigation {
     }
 
     private void injectWebRtcInstrumentation() {
-        try {
-            // customJS.js is already Base64-encoded into customJS and injected by
-            // injectJSviaJavascript(). To avoid duplicating the string here, we
-            // only rely on the JS-side wrapper for track 'ended' events.
-            // This method is kept for future extension but intentionally empty.
-        } catch (Exception e) {
-            GNLog.getInstance().logError(TAG, "Error injecting WebRTC instrumentation via javascript", e);
-        }
+        // customJS.js is already Base64-encoded into customJS and injected by
+        // injectJSviaJavascript(). To avoid duplicating the string here, we
+        // only rely on the JS-side wrapper for track 'ended' events.
+        // This method is kept for future extension but intentionally empty.
     }
 
     public void onFormResubmission(GoNativeWebviewInterface view, Message dontResend, Message resend) {
@@ -1098,6 +1094,7 @@ public class UrlNavigation {
                 }
             }
         } catch (Exception e) {
+            Log.w(TAG, "Error checking 1x1 pixel data URI", e);
             return false;
         }
         return false;

@@ -20,8 +20,11 @@ import co.median.median_core.AppConfig;
 import co.median.median_core.Bridge;
 import co.median.median_core.GoNativeWebviewInterface;
 import co.median.android.GoNativeApplication;
+import co.median.median_core.GNLog;
 
 public class WebViewContainerView extends FrameLayout {
+
+    private static final String TAG = WebViewContainerView.class.getName();
 
     private ViewGroup webview;
     private boolean isGecko = false;
@@ -50,7 +53,7 @@ public class WebViewContainerView extends FrameLayout {
                 webview = (ViewGroup) consGecko.newInstance(context);
                 this.isGecko = true;
             } catch (Exception e) {
-                e.printStackTrace();
+                GNLog.getInstance().logError(TAG, "Error initializing GeckoView", e);
             }
         } else {
             webview = new LeanWebView(context);
@@ -67,7 +70,7 @@ public class WebViewContainerView extends FrameLayout {
                 Method setupWebview = geckoSetupClass.getMethod("setupWebviewForActivity", Activity.class, GoNativeWebviewInterface.class, Bridge.class, boolean.class);
                 setupWebview.invoke(geckoSetupClass, activity,  (GoNativeWebviewInterface) webview, ((GoNativeApplication) activity.getApplication()).mBridge, isRoot);
             } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                e.printStackTrace();
+                GNLog.getInstance().logError(TAG, "Error setting up GeckoView", e);
             }
         } else {
             WebViewSetup.setupWebviewForActivity(getWebview(), activity);

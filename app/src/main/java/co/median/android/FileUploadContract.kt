@@ -418,6 +418,7 @@ class FileUploadContract : ActivityResultContract<FileUploadOptions, FileUploadR
                 false
             } ?: false
         } catch (e: Exception) {
+            Log.w(TAG, "Error checking file size", e)
             false
         }
     }
@@ -433,6 +434,7 @@ class FileUploadContract : ActivityResultContract<FileUploadOptions, FileUploadR
                 false
             } ?: false
         } catch (e: IOException) {
+            Log.w(TAG, "Error reading file content", e)
             false
         }
     }

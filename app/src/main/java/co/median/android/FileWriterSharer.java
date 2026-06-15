@@ -254,8 +254,8 @@ public class FileWriterSharer {
                 fileInfo.fileOutputStream.close();
                 fileInfo.savedFile.delete();
                 this.idToFileInfo.remove(identifier);
-            } catch (Exception ignored) {
-
+            } catch (Exception e) {
+                Log.w(TAG, "Error cleaning up after byte overflow", e);
             }
             GNLog.getInstance().logError(TAG, "Received too many bytes. Expected " + fileInfo.size);
             FileDownloader.runErrorCallback(context, fileInfo.callback, "Received too many bytes. Expected " + fileInfo.size);
